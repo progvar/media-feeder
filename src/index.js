@@ -1,3 +1,3 @@
 requirejs(['./app/config'], function loadApp() {
-    requirejs(['app/main']);
+    requirejs(['app/homepage']);
 });

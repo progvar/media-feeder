@@ -3,7 +3,7 @@ define(['jquery'], fetchFeed);
 
 function fetchFeed($) {
     let requestConfig = {
-        url: 'http://146.185.158.18/fake_api.phps',
+        url: 'http://146.185.158.18/fake_api.php',
         dataType: 'jsonp',
     };
 

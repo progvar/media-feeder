@@ -2,16 +2,20 @@ define(['jquery'], fetchFeed);
 
 
 function fetchFeed($) {
-    let url = 'http://146.185.158.18/fake_api.php';
-
-    $.ajax({
-        url,
+    let requestConfig = {
+        url: 'http://146.185.158.18/fake_api.phps',
         dataType: 'jsonp',
-        success: handleFeed
-    });
-}
+    };
 
+    $.ajax(requestConfig)
+        .done(handleFeed)
+        .fail(handleError);
+}
 
 function handleFeed(feed) {
     console.log(feed);
+}
+
+function handleError(jqXHR, textStatus, errorThrown) {
+    console.error(errorThrown);
 }

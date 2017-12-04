@@ -1,5 +1,26 @@
-define(['jquery'], fetchFeed);
+define(['jquery'], hompepage);
 
+
+function hompepage($) {
+    !window.requestAnimationFrame ? fixGallery($) : window.requestAnimationFrame(fixGallery.bind(this, $));
+
+    $(window).on('scroll', function(){
+		!window.requestAnimationFrame ? fixGallery($) : window.requestAnimationFrame(fixGallery.bind(this, $));
+    });
+
+    fetchFeed($);
+}
+
+function fixGallery() {
+    let offsetTop = $('.main-content').offset().top,
+        scrollTop = $(window).scrollTop();
+
+    if (scrollTop > offsetTop) {
+        $('.main-content').addClass('is-fixed');
+    } else {
+        $('.main-content').removeClass('is-fixed');
+    }
+}
 
 function fetchFeed($) {
     let requestConfig = {
@@ -7,9 +28,9 @@ function fetchFeed($) {
         dataType: 'jsonp',
     };
 
-    $.ajax(requestConfig)
-        .done(handleFeed)
-        .fail(handleError);
+    // $.ajax(requestConfig)
+    //     .done(handleFeed)
+    //     .fail(handleError);
 }
 
 function handleFeed(feed) {

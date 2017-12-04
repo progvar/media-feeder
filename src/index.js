@@ -1,3 +1,7 @@
+'use strict';
+
 requirejs(['./app/config'], function loadApp() {
-    requirejs(['app/homepage']);
+    requirejs(['controllers/homepage'], function(Homepage) {
+        Homepage.init();
+    });
 });

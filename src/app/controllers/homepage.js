@@ -30,28 +30,32 @@ function Homepage($, apiService, modelService) {
 }
 
 function handleDOM() {
+    let toggleSortingMenu = () => handleToggle('.main-content', 'sorting-menu-opened'),
+        toggleFilter = event => handleToggle(event.target, 'active');
+
     usePositionHandler();
 
-    registerScrollListener();
-    registerClickListener();
+    registerListener('.sorting-menu-toggle', 'click', toggleSortingMenu);
+    registerListener('.filter-btn', 'click', toggleFilter);
+    registerListener(window, 'scroll', usePositionHandler);
 }
 
-function registerClickListener() {
-    $('.filter-btn').on('click', handleFilterToggleClick);
+function registerListener(selector, type, handler) {
+    $(selector).on(type, handler);
 }
 
-function handleFilterToggleClick() {
-    let element = $(this);
-
-    if (element.hasClass('active')) {
-        return element.removeClass('active');
+function handleToggle(targetElement, toggleClass) {
+    if (!targetElement) {
+        return;
     }
 
-    element.addClass('active');
-}
+    let target = $(targetElement);
 
-function registerScrollListener () {
-    $(window).on('scroll', usePositionHandler);
+    if (target.hasClass(toggleClass)) {
+        return target.removeClass(toggleClass);
+    }
+
+    target.addClass(toggleClass);
 }
 
 function usePositionHandler() {

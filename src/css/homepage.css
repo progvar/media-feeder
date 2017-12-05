@@ -44,13 +44,13 @@ ul.toggle-filters {
     margin: 0;
     padding: 0;
     text-align: center;
-    cursor: pointer;
 }
 
 ul.toggle-filters li.filter-btn {
     display: inline-block;
     line-height: 50px;
     padding: 0 8px;
+    cursor: pointer;
 }
 
 li.filter-btn.active {

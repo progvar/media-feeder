@@ -41,8 +41,13 @@ function registerClickListener() {
 }
 
 function handleFilterToggleClick() {
-    $('.filter-btn.active').removeClass('active');
-    $(this).addClass('active');
+    let element = $(this);
+
+    if (element.hasClass('active')) {
+        return element.removeClass('active');
+    }
+
+    element.addClass('active');
 }
 
 function registerScrollListener () {

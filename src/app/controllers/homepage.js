@@ -4,7 +4,7 @@ define(['jquery', 'services/api', 'services/model'], Homepage);
 
 function Homepage($, apiService, modelService) {
     function init() {
-        registreScrollListener();
+        handleDOM();
 
         fetchFeed();
     }
@@ -29,15 +29,31 @@ function Homepage($, apiService, modelService) {
     }
 }
 
-function registreScrollListener () {
-    !window.requestAnimationFrame ? fixGallery($) : window.requestAnimationFrame(fixGallery);
+function handleDOM() {
+    usePositionHandler();
 
-    $(window).on('scroll', function(){
-        !window.requestAnimationFrame ? fixGallery($) : window.requestAnimationFrame(fixGallery);
-    });
+    registerScrollListener();
+    registerClickListener();
 }
 
-function fixGallery() {
+function registerClickListener() {
+    $('.filter-btn').on('click', handleFilterToggleClick);
+}
+
+function handleFilterToggleClick() {
+    $('.filter-btn.active').removeClass('active');
+    $(this).addClass('active');
+}
+
+function registerScrollListener () {
+    $(window).on('scroll', usePositionHandler);
+}
+
+function usePositionHandler() {
+    !window.requestAnimationFrame ? handleIsFixedClass() : window.requestAnimationFrame(handleIsFixedClass);
+}
+
+function handleIsFixedClass() {
     let offsetTop = $('.main-content').offset().top,
         scrollTop = $(window).scrollTop();
 

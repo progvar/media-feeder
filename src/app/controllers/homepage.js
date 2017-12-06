@@ -12,9 +12,10 @@ function Homepage($, apiService, modelService) {
     }
 
     function fetchFeed() {
-        apiService
+        return apiService
             .fetchFeed()
             .done(handleFeed)
+            .done(applyFilters)
             .fail(handleError);
     }
 
@@ -26,12 +27,33 @@ function Homepage($, apiService, modelService) {
         console.error(errorThrown);
     }
 
+    function applyFilters(feed) {
+        if (!activeFilters.length) {
+            return modelService.updateFilteredFeed(feed);
+        }
+
+        let filteredFeed = feed.filter(doesMediaComfortFilters);
+
+        modelService.updateFilteredFeed(filteredFeed);
+    }
+
+    function doesMediaComfortFilters(media) {
+        return activeFilters.some(filter => filter.mediaType === media.type && filter.isLive === media.isLive)
+    }
+
     function updateActiveFilters() {
-        let currentFilter = $(this).data('filter'),
-            indexOfFilter = activeFilters.indexOf(currentFilter);
+        let filter = $(this),
+            toggledFilterId = filter.data('filter-id'),
+            mediaType = filter.data('media-type'),
+            isLive = filter.data('is-live'),
+            indexOfFilter = activeFilters.findIndex(activeFilter => activeFilter.id === toggledFilterId);
 
             if (indexOfFilter === -1) {
-                activeFilters.push(currentFilter)
+                activeFilters.push({
+                    id: toggledFilterId,
+                    mediaType,
+                    isLive
+                });
             } else {
                 activeFilters.splice(indexOfFilter, 1);
             }
@@ -44,7 +66,7 @@ function Homepage($, apiService, modelService) {
         usePositionHandler();
 
         registerListener('.sorting-menu-toggle', 'click', toggleSortingMenu);
-        registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters));
+        registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, fetchFeed));
         registerListener(window, 'scroll', usePositionHandler);
     }
 

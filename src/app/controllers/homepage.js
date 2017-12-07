@@ -16,6 +16,7 @@ function Homepage($, apiService, modelService) {
             .fetchFeed()
             .done(handleFeed)
             .done(applyFilters)
+            .done(renderFeed)
             .fail(handleError);
     }
 
@@ -35,6 +36,23 @@ function Homepage($, apiService, modelService) {
         let filteredFeed = feed.filter(doesMediaComfortFilters);
 
         modelService.updateFilteredFeed(filteredFeed);
+    }
+
+    function renderFeed() {
+        let filteredFeed = modelService.filteredFeed;
+
+        if (!filteredFeed || !filteredFeed.length) {
+            return;
+        }
+
+        let mediaFeedContainer = $('.media-feed main'),
+            generatedFeedHtml = filteredFeed.map(getFeedItemTemplate).join('\n');
+
+            mediaFeedContainer.html(generatedFeedHtml);
+    }
+
+    function getFeedItemTemplate(media) {
+        return `<div class="feed-item" style="background-image: url('${media.picture}')"></div>`;
     }
 
     function doesMediaComfortFilters(media) {

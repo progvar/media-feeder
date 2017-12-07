@@ -57,6 +57,12 @@ ul.toggle-filters li.filter-btn {
     line-height: 50px;
     padding: 0 8px;
     cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 li.filter-btn.active {
@@ -90,23 +96,27 @@ li.filter-btn.active {
 .media-feed {
     width: 100%;
     margin-left: 0;
-    min-height: calc(100vh - 80px - 50px - 40px);
     background-color: #dadada;
     transition: margin-left 0.2s, width 0.2s;
 }
 
 main {
-    padding: 20px;
+    padding: 10px;
     display: flex;
+    align-content: flex-start;
     flex-wrap: wrap;
-    min-height: calc(100vh - 80px - 50px - 40px);
+    min-height: calc(100vh - 20px - 80px - 50px - 1px - 40px); /* vh - feed container padding - header - toggles - </hr> - footer */
   }
 
-main div {
-    width: 150px;
+
+main .feed-item {
+    min-width: 100px;
+    max-width: 7.2%;
     height: 100px;
-    background: #ccc;
-    margin: 0 8px 20px 0;
+    flex: 1 0 auto;
+    background: no-repeat center center;
+    background-size: contain;
+    margin: 0 10px 20px 10px;
 }
 
 sidebar {
@@ -126,7 +136,7 @@ sidebar div {
 hr {
     border: 0;
     border-top: 1px solid #ccc;
-    margin: 0 20px 20px;
+    margin: 0 20px 0 20px;
 }
 
 .footer {

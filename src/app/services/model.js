@@ -16,8 +16,6 @@ function modelService() {
         filteredFeed.push.apply(filteredFeed, newFilteredFeed);
     }
 
-
-
     return {
         feed,
         filteredFeed,

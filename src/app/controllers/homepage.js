@@ -78,12 +78,12 @@ function Homepage($, apiService, modelService) {
     }
 
     function handleDOM() {
-        let toggleSortingMenu = () => handleToggleClass('.main-content', 'sorting-menu-opened'),
+        let toggleSettingsMenu = () => handleToggleClass('.main-content', 'settings-menu-opened'),
             toggleFilterClass = event => handleToggleClass(event.target, 'active');
 
         usePositionHandler();
 
-        registerListener('.sorting-menu-toggle', 'click', toggleSortingMenu);
+        registerListener('.settings-menu-toggle', 'click', toggleSettingsMenu);
         registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, fetchFeed));
         registerListener(window, 'scroll', usePositionHandler);
     }

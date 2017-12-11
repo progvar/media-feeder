@@ -5,6 +5,23 @@ html, body {
     color: #666;
 }
 
+.btn {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
 .header-bar {
     padding: 16px;
     background-color: #4b367c;
@@ -45,24 +62,10 @@ a.settings-menu-toggle {
     background: transparent url(../img/settings-menu-icon.svg) no-repeat center;
 }
 
-ul.toggle-filters {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-}
-
 ul.toggle-filters li.filter-btn {
     display: inline-block;
     line-height: 50px;
     padding: 0 8px;
-    cursor: pointer;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
 }
 
 li.filter-btn.active {
@@ -81,26 +84,58 @@ li.filter-btn.active {
     text-align: center;
 }
 
-.settings-menu .reset-button {
-    position: absolute;
-    transform: translateX(-150%);
-    width: 100px;
-    top: 50%;
-    display: inline-block;
+.settings-menu .sorting-container {
+    margin: 10px 0 50vh;
+    width: 100%;
+}
+
+.settings-menu .reset-btn {
     background-color: #4b367c;
     color: #fff;
-    padding: 8px;
-    border-radius: 2px;
-    transition: transform 0.2s;
 
 }
 
-.settings-menu .reset-button:hover {
+.settings-menu .reset-btn:hover {
     background-color: #7C5EBC;
+}
+
+.sorting-container .select-sorting-btn {
+    background-color: #f9f9f9;
+    transform: translateX(50%);
+    text-decoration: none;
+}
+
+
+.sorting-container ul.sorting-options {
+    display: none;
+    position: absolute;
+    transform: translateX(50%);
+    text-align: left;
+    list-style-type: none;
+    box-shadow: 2px 2px 2px #000;
+    padding: 0;
+    margin: 0 -8px;
+    background: #fff;
+}
+
+ul.sorting-options.opened {
+    display: block;
+}
+
+ul.sorting-options li {
+    width: 100px;
+    padding: 8px;
+}
+
+.select-sorting-btn:hover,
+ul.sorting-options li:hover {
+    background-color: #dadada;
+    color: #fff;
     cursor: pointer;
 }
 
 .main-content.settings-menu-opened .settings-menu {
+    min-width: 200px;
     width: 20%;
 }
 
@@ -109,8 +144,21 @@ li.filter-btn.active {
     margin-left: 20%;
 }
 
-.main-content.settings-menu-opened .settings-menu .reset-button {
-    transform: translateX(-50%);
+
+.settings-menu .settings-btn {
+    width: 50%;
+    max-width: 100px;
+    padding: 8px;
+    border: solid 1px #4b367c;
+    border-radius: 2px;
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.main-content.settings-menu-opened .settings-menu .settings-btn {
+    transform: translateX(0%);
 }
 
 .main-content.is-fixed .settings-menu {

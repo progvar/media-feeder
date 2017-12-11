@@ -78,14 +78,43 @@ function Homepage($, apiService, modelService) {
     }
 
     function handleDOM() {
-        let toggleSettingsMenu = () => handleToggleClass('.main-content', 'settings-menu-opened'),
-            toggleFilterClass = event => handleToggleClass(event.target, 'active');
+        let toggleFilterClass = event => handleToggleClass(event.target, 'active'),
+            toggleSortingOptions = () => handleToggleClass('.sorting-options', 'opened');
 
         usePositionHandler();
 
         registerListener('.settings-menu-toggle', 'click', toggleSettingsMenu);
         registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, fetchFeed));
+        registerListener('.select-sorting-btn', 'click', toggleSortingOptions);
         registerListener(window, 'scroll', usePositionHandler);
+        registerListener(window, 'resize', closeSettingsMenu);
+    }
+
+    function isWindowWidthEnough() {
+        let win = $(window);
+
+        return win.width() >= 900;
+    }
+
+    function toggleSettingsMenu() {
+        if (isWindowWidthEnough()) {
+            handleToggleClass('.main-content', 'settings-menu-opened');
+        }
+    }
+
+    function closeSettingsMenu() {
+        if (!sWindowWidthEnough()) {
+            $('.main-content').removeClass('settings-menu-opened');
+        }
+    }
+
+
+    function closeSettingsMenu() {
+        let win = $(this);
+
+        if (win.width() <= 900) {
+            $('.main-content').removeClass('settings-menu-opened');
+        }
     }
 
     function applyHandlers() {

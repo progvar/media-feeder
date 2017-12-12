@@ -99,12 +99,14 @@ function Homepage($, apiService, modelService) {
     function toggleSettingsMenu() {
         if (isWindowWidthEnough()) {
             handleToggleClass('.main-content', 'settings-menu-opened');
+            $('.sorting-options').removeClass('opened');
         }
     }
 
     function closeSettingsMenu() {
         if (!sWindowWidthEnough()) {
             $('.main-content').removeClass('settings-menu-opened');
+            $('.sorting-options').removeClass('opened');
         }
     }
 

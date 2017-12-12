@@ -85,8 +85,11 @@ li.filter-btn.active {
 }
 
 .settings-menu .sorting-container {
+    position: relative;
+    left: 50%;
     margin: 10px 0 50vh;
-    width: 100%;
+    width: 120px;
+    transform: translateX(-50%);
 }
 
 .settings-menu .reset-btn {
@@ -101,7 +104,7 @@ li.filter-btn.active {
 
 .sorting-container .select-sorting-btn {
     background-color: #f9f9f9;
-    transform: translateX(50%);
+    transform: translateX(-25%);
     text-decoration: none;
 }
 
@@ -109,7 +112,7 @@ li.filter-btn.active {
 .sorting-container ul.sorting-options {
     display: none;
     position: absolute;
-    transform: translateX(50%);
+    left: 9px;
     text-align: left;
     list-style-type: none;
     box-shadow: 2px 2px 2px #000;
@@ -146,15 +149,15 @@ ul.sorting-options li:hover {
 
 
 .settings-menu .settings-btn {
-    width: 50%;
-    max-width: 100px;
+    width: 120px;
     padding: 8px;
     border: solid 1px #4b367c;
     border-radius: 2px;
-    transform: translateX(-100%);
+    transform: translateX(-150%);
     transition: transform 0.2s;
     white-space: nowrap;
     display: inline-block;
+    box-sizing: border-box;
 }
 
 .main-content.settings-menu-opened .settings-menu .settings-btn {

@@ -138,7 +138,6 @@ ul.sorting-options li:hover {
 }
 
 .main-content.settings-menu-opened .settings-menu {
-    min-width: 200px;
     width: 20%;
 }
 
@@ -160,7 +159,7 @@ ul.sorting-options li:hover {
     box-sizing: border-box;
 }
 
-.main-content.settings-menu-opened .settings-menu .settings-btn {
+.main-content.settings-menu-opened .settings-btn {
     transform: translateX(0%);
 }
 

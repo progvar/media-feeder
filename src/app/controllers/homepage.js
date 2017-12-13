@@ -4,7 +4,9 @@ define(['jquery', 'services/api', 'services/model'], Homepage);
 
 function Homepage($, apiService, modelService) {
 
-    let activeFilters = [];
+    let activeFilters = [],
+        sortByProp = 'viewers';
+
 
     function init() {
         handleDOM();
@@ -16,6 +18,7 @@ function Homepage($, apiService, modelService) {
             .fetchFeed()
             .done(handleFeed)
             .done(applyFilters)
+            .done(applySorting)
             .done(renderFeed)
             .fail(handleError);
     }
@@ -30,12 +33,34 @@ function Homepage($, apiService, modelService) {
 
     function applyFilters(feed) {
         if (!activeFilters.length) {
-            return modelService.updateFilteredFeed(feed);
+            modelService.updateFilteredFeed(feed);
+            return;
         }
 
         let filteredFeed = feed.filter(doesMediaComfortFilters);
 
         modelService.updateFilteredFeed(filteredFeed);
+    }
+
+    function applySorting() {
+        let filteredFeed = modelService.filteredFeed || modelService.feed || [];
+
+        if (!sortByProp || !filteredFeed.length) {
+            return;
+        }
+
+        filteredFeed.sort(sortCb)
+    }
+
+    function sortCb(mediaA, mediaB) {
+        let valA = mediaA[sortByProp],
+            valB = mediaB[sortByProp]
+
+        if (valA && valB && typeof valA === 'string' && typeof valB === 'string') {
+            return valA.localeCompare(valB);
+        }
+
+        return valA > valB ? -1 : 1;
     }
 
     function renderFeed() {
@@ -46,13 +71,19 @@ function Homepage($, apiService, modelService) {
         }
 
         let mediaFeedContainer = $('.media-feed main'),
-            generatedFeedHtml = filteredFeed.map(getFeedItemTemplate).join('\n');
+            generatedFeedHtml = filteredFeed.reduce(getFeedItemTemplate, []).join('\n');
 
             mediaFeedContainer.html(generatedFeedHtml);
     }
 
-    function getFeedItemTemplate(media) {
-        return `<div class="feed-item" style="background-image: url('${media.picture}')"></div>`;
+    function getFeedItemTemplate(mediaTemplates, media) {
+        if (media.picture) {
+            let template = `<div class="feed-item" style="background-image: url('${media.picture}')"></div>`;
+
+            mediaTemplates.push(template)
+        }
+
+        return mediaTemplates;
     }
 
     function doesMediaComfortFilters(media) {
@@ -78,16 +109,41 @@ function Homepage($, apiService, modelService) {
     }
 
     function handleDOM() {
-        let toggleFilterClass = event => handleToggleClass(event.target, 'active'),
-            toggleSortingOptions = () => handleToggleClass('.sorting-options', 'opened');
+        let toggleFilterClass = event => handleToggleClass(event.target, 'active');
 
         usePositionHandler();
 
         registerListener('.settings-menu-toggle', 'click', toggleSettingsMenu);
         registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, fetchFeed));
         registerListener('.select-sorting-btn', 'click', toggleSortingOptions);
+        registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, fetchFeed));
+        registerListener(window, 'click', closeSortingDropdown);
         registerListener(window, 'scroll', usePositionHandler);
         registerListener(window, 'resize', closeSettingsMenu);
+    }
+
+    function toggleSortingOptions(event) {
+        event.stopPropagation();
+
+        handleToggleClass('.sorting-options', 'opened')
+    }
+
+    function closeSortingDropdown(event) {
+        let target = $(event.target),
+            sortingDropdown = $('.sorting-options');
+
+        if (sortingDropdown.hasClass('opened') && !target.closest('.sorting-options').length) {
+            handleToggleClass('.sorting-options', 'opened');
+        }
+    }
+
+    function handleSortingSelection() {
+        let element = $(this),
+            selectedSortingText = element.html();
+
+        sortByProp = element.data('sort-by');
+
+        $('.select-sorting-btn').html(selectedSortingText);
     }
 
     function isWindowWidthEnough() {

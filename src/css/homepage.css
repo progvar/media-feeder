@@ -102,6 +102,10 @@ li.filter-btn.active {
     background-color: #7C5EBC;
 }
 
+.sorting-container h3 {
+    color: #4b367c;
+}
+
 .sorting-container .select-sorting-btn {
     background-color: #f9f9f9;
     transform: translateX(-25%);

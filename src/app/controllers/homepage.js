@@ -144,6 +144,8 @@ function Homepage($, apiService, modelService) {
         sortByProp = element.data('sort-by');
 
         $('.select-sorting-btn').html(selectedSortingText);
+
+        handleToggleClass('.sorting-options', 'opened');
     }
 
     function isWindowWidthEnough() {

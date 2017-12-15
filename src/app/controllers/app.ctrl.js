@@ -1,8 +1,8 @@
 'use strict';
 
-define(['jquery', 'services/api', 'services/model'], Homepage);
+define(['jquery', 'services/api', 'services/model'], AppController);
 
-function Homepage($, apiService, modelService) {
+function AppController($, apiService, modelService) {
 
     let activeFilters = [],
         sortByProp = 'viewers';

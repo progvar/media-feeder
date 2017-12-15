@@ -7,6 +7,9 @@ function AppController($, apiService, modelService) {
     let activeFilters = [],
         sortByProp = 'viewers';
 
+    let defaultPollingInterval = 2000,
+        delayedPollingInterval = 10000;
+
 
     function init() {
         handleDOM();
@@ -16,11 +19,16 @@ function AppController($, apiService, modelService) {
     function fetchFeed() {
         return apiService
             .fetchFeed()
+            .done(poll.bind(null, defaultPollingInterval))
             .done(handleFeed)
             .done(applyFilters)
             .done(applySorting)
             .done(renderFeed)
             .fail(handleError);
+    }
+
+    function poll(pollingInterval) {
+        setTimeout(fetchFeed, pollingInterval);
     }
 
     function handleFeed(feed) {
@@ -29,6 +37,8 @@ function AppController($, apiService, modelService) {
 
     function handleError(jqXHR, textStatus, errorThrown) {
         console.error(errorThrown);
+
+        poll(delayedPollingInterval);
     }
 
     function applyFilters(feed) {

@@ -11,6 +11,8 @@ function AppController($, apiService, modelService) {
         delayedInterval = 10000,
         userDefinedInterval = null;
 
+    let currentPollId = null;
+
 
     function init() {
         handleDOM();
@@ -29,7 +31,7 @@ function AppController($, apiService, modelService) {
     }
 
     function poll(pollingInterval) {
-        setTimeout(fetchFeed, pollingInterval);
+        currentPollId = setTimeout(fetchFeed, pollingInterval);
     }
 
     function handleFeed(feed) {
@@ -119,13 +121,19 @@ function AppController($, apiService, modelService) {
             }
     }
 
+    function resetPolling() {
+        if (currentPollId) {
+            clearInterval(currentPollId);
+        }
+    }
+
     function handleDOM() {
         let toggleFilterClass = event => handleToggleClass(event.target, 'active');
 
         usePositionHandler();
 
         registerListener('.settings-menu-toggle', 'click', toggleSettingsMenu);
-        registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, fetchFeed));
+        registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, resetPolling, fetchFeed));
         registerListener('.select-sorting-btn', 'click', toggleSortingOptions);
         registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, fetchFeed));
         registerListener(window, 'click', closeSortingDropdown);

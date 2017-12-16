@@ -34,6 +34,8 @@ function AppController($, apiService, modelService) {
     function poll() {
         let pollingInterval = userDefinedInterval || defaultInterval;
 
+        console.log('polling', currentPollId)
+
         currentPollId = setTimeout(fetchFeed, pollingInterval);
     }
 
@@ -126,6 +128,7 @@ function AppController($, apiService, modelService) {
 
     function resetPolling() {
         if (currentPollId) {
+            console.log('clearing:', currentPollId);
             clearInterval(currentPollId);
         }
     }
@@ -140,7 +143,7 @@ function AppController($, apiService, modelService) {
         registerListener('.select-sorting-btn', 'click', toggleSortingOptions);
         registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, resetPolling, fetchFeed));
         registerListener('#save-btn', 'click', applyHandlers(setPollingInterval, resetPolling, fetchFeed));
-        registerListener('.polling-input', 'keyup', handleKeyUp);
+        registerListener('.polling-input', 'keyup', detectEnter);
         registerListener(window, 'click', closeSortingDropdown);
         registerListener(window, 'scroll', usePositionHandler);
         registerListener(window, 'resize', closeSettingsMenu);
@@ -152,7 +155,7 @@ function AppController($, apiService, modelService) {
         return inputVal && inputVal >= minInterval ? inputVal : null;
     }
 
-    function handleKeyUp(event) {
+    function detectEnter(event) {
         let keyCode = event.which || event.keyCode;
 
         if (keyCode === 13) {

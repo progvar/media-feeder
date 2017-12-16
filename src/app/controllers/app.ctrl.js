@@ -7,8 +7,9 @@ function AppController($, apiService, modelService) {
     let activeFilters = [],
         sortByProp = 'viewers';
 
-    let defaultInterval = 2000,
-        delayedInterval = 10000,
+    let defaultInterval = 5000,
+        delayedInterval = 20000,
+        minInterval = 1000,
         userDefinedInterval = null;
 
     let currentPollId = null;
@@ -22,7 +23,7 @@ function AppController($, apiService, modelService) {
     function fetchFeed() {
         return apiService
             .fetchFeed()
-            .done(poll.bind(null, defaultInterval))
+            .done(poll)
             .done(handleFeed)
             .done(applyFilters)
             .done(applySorting)
@@ -30,7 +31,9 @@ function AppController($, apiService, modelService) {
             .fail(handleError);
     }
 
-    function poll(pollingInterval) {
+    function poll() {
+        let pollingInterval = userDefinedInterval || defaultInterval;
+
         currentPollId = setTimeout(fetchFeed, pollingInterval);
     }
 
@@ -135,10 +138,30 @@ function AppController($, apiService, modelService) {
         registerListener('.settings-menu-toggle', 'click', toggleSettingsMenu);
         registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, resetPolling, fetchFeed));
         registerListener('.select-sorting-btn', 'click', toggleSortingOptions);
-        registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, fetchFeed));
+        registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, resetPolling, fetchFeed));
+        registerListener('#save-btn', 'click', applyHandlers(setPollingInterval, resetPolling, fetchFeed));
+        registerListener('.polling-input', 'keyup', handleKeyUp);
         registerListener(window, 'click', closeSortingDropdown);
         registerListener(window, 'scroll', usePositionHandler);
         registerListener(window, 'resize', closeSettingsMenu);
+    }
+
+    function getPollingInputVal() {
+        let inputVal = $('.polling-input')[0].valueAsNumber;
+
+        return inputVal && inputVal >= minInterval ? inputVal : null;
+    }
+
+    function handleKeyUp(event) {
+        let keyCode = event.which || event.keyCode;
+
+        if (keyCode === 13) {
+            userDefinedInterval = getPollingInputVal();
+        }
+    }
+
+    function setPollingInterval() {
+        userDefinedInterval = getPollingInputVal();
     }
 
     function toggleSortingOptions(event) {

@@ -1,7 +1,11 @@
 'use strict';
 
-requirejs(['./app/config'], function loadApp() {
-    requirejs(['controllers/app.ctrl'], function(AppController) {
-        AppController.init();
-    });
-});
+requirejs(['./app/config'], loadApp);
+
+function loadApp() {
+    requirejs(['controllers/app.ctrl', 'jquery'], initApp);
+}
+
+function initApp(AppController) {
+    AppController.initApp();
+}

@@ -1,0 +1,30 @@
+{
+  "name": "media-feeder",
+  "version": "0.4.0",
+  "description": "A live interface for recorded & live media content.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/progvar/media-feeder.git"
+  },
+  "keywords": [
+    "media",
+    "feed",
+    "requirejs",
+    "jquery"
+  ],
+  "author": "Gyula Varadi",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/progvar/media-feeder/issues"
+  },
+  "homepage": "https://github.com/progvar/media-feeder#readme",
+  "devDependencies": {
+    "chai": "4.1.2",
+    "mocha": "4.0.1",
+    "sinon": "4.1.3"
+  }
+}

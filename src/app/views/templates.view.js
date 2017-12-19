@@ -14,12 +14,23 @@ function viewTemplates() {
 
     function getFeedItemTemplate(mediaTemplates, media) {
         if (media.picture) {
-            let template = `<div class="feed-item" style="background-image: url('${media.picture}')"></div>`;
+            let template = `<div class="feed-item" style="background-image: url('${media.picture}')">${getMediaActionsContainer(media.id)}</div>`;
 
             mediaTemplates.push(template)
         }
 
         return mediaTemplates;
+    }
+
+    function getMediaActionsContainer(mediaId) {
+        return `<div class="media-actions">
+                    <a class="action-btn watch-later-btn" data-media-id="${mediaId}">
+                        <i class="far fa-clock"></i>
+                    </a>
+                    <a class="action-btn del-btn" data-media-id="${mediaId}">
+                        <i class="far fa-trash-alt"></i>
+                    </a>
+                </div>`;
     }
 
     return {

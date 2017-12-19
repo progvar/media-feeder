@@ -22,6 +22,10 @@ ul {
     text-align: center;
 }
 
+a:active {
+    color: #7C5EBC;
+}
+
 .header-bar {
     padding: 16px;
     background-color: #4b367c;
@@ -50,6 +54,7 @@ ul {
 
 .main-content.is-fixed .filter-header {
     position: fixed;
+    z-index: 10;
     top: 0;
     left: 0;
     width: 100%;
@@ -59,7 +64,13 @@ a.settings-menu-toggle {
     position: absolute;
     height: 50px;
     width: 60px;
-    background: transparent url(../img/settings-menu-icon.svg) no-repeat center;
+    text-align: center
+}
+
+a.settings-menu-toggle .settings-icon {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 ul.toggle-filters li.filter-btn {
@@ -254,7 +265,8 @@ main {
   }
 
 
-main .feed-item {
+.feed-item {
+    position: relative;
     min-width: 100px;
     max-width: 7.2%;
     height: 100px;
@@ -262,6 +274,32 @@ main .feed-item {
     background: no-repeat center center;
     background-size: contain;
     margin: 0 10px 20px 10px;
+}
+
+.media-actions {
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    bottom: 4px;
+    width: 100%;
+    font-size: 10px;
+    text-align: center;
+}
+
+.action-btn {
+    font-size: 16px;
+}
+
+.action-btn:hover {
+    cursor: pointer;
+}
+
+.watch-later-btn:hover {
+    color: #7C5EBC;
+}
+
+.del-btn:hover {
+    color: red;
 }
 
 sidebar {

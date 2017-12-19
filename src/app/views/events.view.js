@@ -1,8 +1,8 @@
 'use strict';
 
-define(['services/api.svc', 'services/mediaFeed.svc', 'services/eventQueue.svc'], viewEvents)
+define(['services/api.svc', 'services/mediaFeed.svc', 'services/eventQueue.svc', 'services/watchItLater.svc'], viewEvents)
 
-function viewEvents(apiService, mediaFeedService, eventQueueService) {
+function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLaterService) {
 
     let resetPolling = apiService.resetPolling.bind(apiService),
         fetchFeed = apiService.fetchFeed.bind(apiService),
@@ -29,8 +29,20 @@ function viewEvents(apiService, mediaFeedService, eventQueueService) {
         registerListener(window, 'resize', closeSettingsMenu);
     }
 
+    function initDynamicElementListeners() {
+        registerListener('.watch-later-btn', 'click', onWatchItLater);
+    }
+
     function registerListener(selector, type, handler) {
         $(selector).on(type, handler);
+    }
+
+    function getMediaIdAttr(element) {
+        return $(element).data('media-id');
+    }
+
+    function onWatchItLater() {
+        watchItLaterService.add(getMediaIdAttr(this));
     }
 
     function dispatchFilterChange() {
@@ -165,6 +177,7 @@ function viewEvents(apiService, mediaFeedService, eventQueueService) {
     }
 
     return {
-        initListeners
+        initListeners,
+        initDynamicElementListeners
     }
 }

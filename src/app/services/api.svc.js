@@ -3,8 +3,8 @@
 define(['services/mediaFeed.svc', 'services/eventQueue.svc'], apiService);
 
 function apiService(mediaFeedService, eventQueueService) {
-    let defaultInterval = 5000,
-        delayedInterval = 20000,
+    let defaultInterval = 10000,
+        delayedInterval = 30000,
         minInterval = 1000,
         userDefinedInterval = null;
 

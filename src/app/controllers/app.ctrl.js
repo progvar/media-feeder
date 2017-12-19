@@ -22,6 +22,7 @@ function AppController(apiService, viewEvents, viewTemplates, eventQueueService)
         }
 
         viewTemplates.renderFeed(processedFeed);
+        viewEvents.initDynamicElementListeners();
     }
 
     return {

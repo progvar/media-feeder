@@ -1,9 +1,9 @@
 'use strict';
 
-define([], eventQueue);
+define([], eventQueueService);
 
 
-function eventQueue() {
+function eventQueueService() {
 
     let events = [];
 

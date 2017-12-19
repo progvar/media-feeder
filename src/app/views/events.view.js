@@ -1,16 +1,16 @@
 'use strict';
 
-define(['services/api.svc', 'services/model.svc', 'services/eventQueue.svc'], viewEvents)
+define(['services/api.svc', 'services/mediaFeed.svc', 'services/eventQueue.svc'], viewEvents)
 
-function viewEvents(apiService, modelService, eventQueue) {
+function viewEvents(apiService, mediaFeedService, eventQueueService) {
 
     let resetPolling = apiService.resetPolling.bind(apiService),
         fetchFeed = apiService.fetchFeed.bind(apiService),
         setPollingInterval = apiService.setPollingInterval.bind(apiService),
         minInterval = apiService.minInterval;
 
-    let activeFilters = modelService.activeFilters,
-        sortByPropName = modelService.sortByPropName;
+    let activeFilters = mediaFeedService.activeFilters,
+        sortByPropName = mediaFeedService.sortByPropName;
 
 
     function initListeners() {
@@ -34,11 +34,11 @@ function viewEvents(apiService, modelService, eventQueue) {
     }
 
     function dispatchFilterChange() {
-        eventQueue.publish('filter_change');
+        eventQueueService.publish('filter_change');
     }
 
     function dispatchSortingChange() {
-        eventQueue.publish('sorting_change')
+        eventQueueService.publish('sorting_change')
     }
 
     function handleToggleClass(targetElement, toggleClass) {

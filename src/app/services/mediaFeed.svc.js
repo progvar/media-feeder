@@ -1,9 +1,10 @@
 'use strict';
 
-define([], modelService);
+define([], mediaFeedService);
 
-function modelService() {
-    let processedFeed = [];
+function mediaFeedService() {
+    let processedFeed = [],
+        watchItLaterList = [];
 
     let activeFilters = [],
         sortByPropName = 'viewers';

@@ -3,9 +3,9 @@
 requirejs.config({
     baseUrl: './',
     paths: {
-        controllers: 'src/app/controllers',
-        services: 'src/app/services',
-        views: 'src/app/views',
+        controllers: 'app/controllers',
+        services: 'app/services',
+        views: 'app/views',
         jquery: 'libs/jquery-3.2.1.min'
     }
 });

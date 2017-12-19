@@ -1,8 +1,8 @@
 'use strict';
 
-define(['services/model.svc', 'services/eventQueue.svc'], apiService);
+define(['services/mediaFeed.svc', 'services/eventQueue.svc'], apiService);
 
-function apiService(modelService, eventQueue) {
+function apiService(mediaFeedService, eventQueueService) {
     let defaultInterval = 5000,
         delayedInterval = 20000,
         minInterval = 1000,
@@ -23,9 +23,9 @@ function apiService(modelService, eventQueue) {
     }
 
     function processFeed(feed) {
-        let processedFeed = modelService.processFeed(feed);
+        let processedFeed = mediaFeedService.processFeed(feed);
 
-        eventQueue.publish('feed_updated', processedFeed);
+        eventQueueService.publish('feed_updated', processedFeed);
     }
 
     function poll(errorOccured) {

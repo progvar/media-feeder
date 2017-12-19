@@ -14,7 +14,8 @@ function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLate
 
 
     function initListeners() {
-        let toggleFilterClass = event => handleToggleClass(event.target, 'active');
+        let toggleFilterClass = event => handleToggleClass(event.target, 'active'),
+            toggleDisabledFilterClass = event => handleToggleClass('.filter-btn', 'disabled');
 
         usePositionHandler();
 
@@ -24,6 +25,7 @@ function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLate
         registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, dispatchSortingChange));
         registerListener('#save-btn', 'click', applyHandlers(handlePollingInputSave, dispatchSortingChange));
         registerListener('.polling-input', 'keyup', handleKeyUp);
+        registerListener('.watch-later-filter', 'click', applyHandlers(toggleFilterClass, toggleDisabledFilterClass));
         registerListener(window, 'click', closeSortingDropdown);
         registerListener(window, 'scroll', usePositionHandler);
         registerListener(window, 'resize', closeSettingsMenu);

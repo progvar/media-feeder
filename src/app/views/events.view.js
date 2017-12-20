@@ -14,26 +14,45 @@ function viewEvents(apiService, mediaFeedService, eventQueueService) {
 
 
     function initListeners() {
-        let toggleFilterClass = event => handleToggleClass(event.target, 'active'),
-            toggleDisabledFilterClass = () => handleToggleClass('.filter-btn', 'disabled'),
-            toggleWatchLaterContainerClass = () => handleToggleClass('.media-feed', 'watch-later-list');
+        let toggleActiveClass = event => handleToggleClass(event.target, 'active');
 
         usePositionHandler();
 
         registerListener('.settings-menu-toggle', 'click', toggleSettingsMenu);
-        registerListener('.filter-btn', 'click', applyHandlers(toggleFilterClass, updateActiveFilters, dispatchFilterChange));
+        registerListener('.filter-btn', 'click', applyHandlers(toggleActiveClass, updateActiveFilters,  dispatchFilterChange));
         registerListener('.select-sorting-btn', 'click', toggleSortingOptions);
         registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, dispatchSortingChange));
         registerListener('#save-btn', 'click', applyHandlers(handlePollingInputSave, dispatchSortingChange));
         registerListener('.polling-input', 'keyup', handleKeyUp);
-        registerListener('.watch-later-filter', 'click', applyHandlers(toggleFilterClass, toggleDisabledFilterClass, toggleWatchLaterContainerClass,  dispatchToggleWatchLaterList));
+        registerListener('.watch-later-filter', 'click', applyHandlers(toggleActiveClass, addDisabledClassAndListener, toggleWatchLaterContainerClass,  dispatchToggleWatchLaterList));
         registerListener(window, 'click', closeSortingDropdown);
         registerListener(window, 'scroll', usePositionHandler);
         registerListener(window, 'resize', closeSettingsMenu);
     }
 
+    function toggleWatchLaterContainerClass() {
+        handleToggleClass('.media-feed', 'watch-later-list');
+    }
+
     function initDynamicElementListeners() {
         registerListener('.watch-later-btn', 'click', onWatchItLater);
+        registerListener('.delete-btn', 'click', onDelete);
+    }
+
+
+    function addDisabledClassAndListener() {
+        if (!$('.watch-later-filter').hasClass('active')) {
+            $('.filter-btn').removeClass('disabled');
+
+            return;
+        }
+
+        $('.filter-btn').addClass('disabled');
+
+        let removeDisabledClass = () => $('.filter-btn.disabled').removeClass('disabled'),
+            toggleWatchLaterActiveClass = () => $('.watch-later-filter').removeClass('active');
+
+        registerListener('.filter-btn.disabled', 'click', applyHandlers(removeDisabledClass, toggleWatchLaterActiveClass));
     }
 
     function registerListener(selector, type, handler) {
@@ -46,6 +65,10 @@ function viewEvents(apiService, mediaFeedService, eventQueueService) {
 
     function onWatchItLater() {
         eventQueueService.publish('add_to_watch_later', getMediaIdAttr(this));
+    }
+
+    function onDelete() {
+        eventQueueService.publish('delete_media', getMediaIdAttr(this));
     }
 
     function dispatchFilterChange() {
@@ -67,7 +90,14 @@ function viewEvents(apiService, mediaFeedService, eventQueueService) {
 
         let target = $(targetElement);
 
-        if (target.hasClass(toggleClass)) {
+        if (target.hasClass('filter-btn') && toggleClass === 'active' && $('.watch-later-filter').hasClass('active')) {
+            target.addClass(toggleClass);
+            toggleWatchLaterContainerClass();
+
+            return;
+        }
+
+        if (target.hasClass(toggleClass) ) {
             return target.removeClass(toggleClass);
         }
 
@@ -167,7 +197,15 @@ function viewEvents(apiService, mediaFeedService, eventQueueService) {
 
     function updateActiveFilters() {
         let filter = $(this),
-            toggledFilterId = filter.data('filter-id'),
+            isWatchLaterActive = $('.watch-later-filter').hasClass('active');
+
+        if (isWatchLaterActive && filter.hasClass('disabled')) {
+            dispatchToggleWatchLaterList();
+
+            return;
+        }
+
+        let toggledFilterId = filter.data('filter-id'),
             mediaType = filter.data('media-type'),
             isLive = filter.data('is-live'),
             indexOfFilter = activeFilters.findIndex(activeFilter => activeFilter.id === toggledFilterId);

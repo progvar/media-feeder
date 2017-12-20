@@ -27,7 +27,7 @@ function viewTemplates() {
                     <a class="action-btn watch-later-btn" data-media-id="${mediaId}">
                         <i class="far fa-clock"></i>
                     </a>
-                    <a class="action-btn del-btn" data-media-id="${mediaId}">
+                    <a class="action-btn delete-btn" data-media-id="${mediaId}">
                         <i class="far fa-trash-alt"></i>
                     </a>
                 </div>`;

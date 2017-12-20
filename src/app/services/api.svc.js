@@ -23,7 +23,7 @@ function apiService(mediaFeedService) {
     }
 
     function processFeed(feed) {
-        return mediaFeedService.processFeed(feed);
+        mediaFeedService.processFeed(feed);
     }
 
     function poll(errorOccured) {

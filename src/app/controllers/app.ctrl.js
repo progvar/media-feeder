@@ -20,11 +20,13 @@ function AppController(apiService, mediaFeedService, viewEvents, viewTemplates, 
         eventQueueService.subscribe('toggle_watch_later', mediaFeedService.toggleWatchLater);
         eventQueueService.subscribe('toggle_watch_later', apiService.fetchFeed);
 
+        eventQueueService.subscribe('delete_media', mediaFeedService.deleteMedia);
+
         eventQueueService.subscribe('feed_updated', renderFeed);
     }
 
     function renderFeed(feed) {
-        if (!feed || !feed.length) {
+        if (!feed) {
             return;
         }
 

@@ -5,10 +5,8 @@ define(['services/eventQueue.svc'], mediaFeedService);
 function mediaFeedService(eventQueueService) {
     const WATCH_LATER = 'watchLaterList';
 
-    let processedFeed = [],
-        watchItLaterList = [];
-
-    let activeFilters = [],
+    let currentFeed = [],
+        activeFilters = [],
         sortByPropName = 'viewers';
 
     let processWatchLaterList = false;
@@ -17,18 +15,18 @@ function mediaFeedService(eventQueueService) {
         if (processWatchLaterList) {
             syncWatchLaterIds(feed);
 
-            let watchLaterList = getWatchLaterList(feed);
+            currentFeed = getWatchLaterList(feed);
 
-            eventQueueService.publish('feed_updated', watchLaterList);
+            eventQueueService.publish('feed_updated', currentFeed);
 
-            return watchLaterList;
+            return currentFeed;
         }
 
-        let processedFeed = sort(filter(feed));
+        currentFeed = sort(filter(feed));
 
-        eventQueueService.publish('feed_updated', processedFeed);
+        eventQueueService.publish('feed_updated', currentFeed);
 
-        return processedFeed;
+        return currentFeed;
 
 
     }
@@ -91,7 +89,8 @@ function mediaFeedService(eventQueueService) {
     }
 
     function addToList(mediaId) {
-        let isMediaAlreadyAdded = watchItLaterList.some(listItem => checkIfMediaAdded(listItem, mediaId))
+        let watchItLaterList = fetchFromLocalStorage(WATCH_LATER),
+            isMediaAlreadyAdded = watchItLaterList.some(listItem => checkIfMediaAdded(listItem, mediaId))
 
         if (isMediaAlreadyAdded) {
             return watchItLaterList;
@@ -107,11 +106,25 @@ function mediaFeedService(eventQueueService) {
     }
 
     function fetchFromLocalStorage(item) {
-        return JSON.parse(window.localStorage.getItem(item));
+        return JSON.parse(window.localStorage.getItem(item)) || [];
     }
 
     function toggleWatchLater() {
         processWatchLaterList = !processWatchLaterList;
+    }
+
+    function deleteMedia(mediaId) {
+        currentFeed = currentFeed.filter(feedItem => feedItem.id !== mediaId);
+
+        let currentFeedIds = currentFeed.map(feedItem => feedItem.id),
+            currentWatchLaterIds = fetchFromLocalStorage(WATCH_LATER),
+            syncronizedWatchLaterIds = currentWatchLaterIds.filter(wathcLaterId => currentFeedIds.some(feedId => feedId === wathcLaterId));
+
+        saveToLocalStorage(syncronizedWatchLaterIds)
+
+        eventQueueService.publish('feed_updated', currentFeed);
+
+        return currentFeed;
     }
 
     return {
@@ -121,6 +134,7 @@ function mediaFeedService(eventQueueService) {
         filter,
         sort,
         add,
-        toggleWatchLater
+        toggleWatchLater,
+        deleteMedia
     };
 }

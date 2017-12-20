@@ -291,6 +291,7 @@ main {
     margin: 0 10px 20px 10px;
 }
 
+
 .media-actions {
     display: flex;
     justify-content: space-around;
@@ -303,6 +304,10 @@ main {
 
 .action-btn {
     font-size: 16px;
+}
+
+.watch-later-list .feed-item .watch-later-btn {
+    display: none;
 }
 
 .action-btn:hover {

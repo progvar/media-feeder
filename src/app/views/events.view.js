@@ -1,8 +1,8 @@
 'use strict';
 
-define(['services/api.svc', 'services/mediaFeed.svc', 'services/eventQueue.svc', 'services/watchItLater.svc'], viewEvents)
+define(['services/api.svc', 'services/mediaFeed.svc', 'services/eventQueue.svc'], viewEvents)
 
-function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLaterService) {
+function viewEvents(apiService, mediaFeedService, eventQueueService) {
 
     let resetPolling = apiService.resetPolling.bind(apiService),
         fetchFeed = apiService.fetchFeed.bind(apiService),
@@ -15,7 +15,8 @@ function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLate
 
     function initListeners() {
         let toggleFilterClass = event => handleToggleClass(event.target, 'active'),
-            toggleDisabledFilterClass = event => handleToggleClass('.filter-btn', 'disabled');
+            toggleDisabledFilterClass = () => handleToggleClass('.filter-btn', 'disabled'),
+            toggleWatchLaterContainerClass = () => handleToggleClass('.media-feed', 'watch-later-list');
 
         usePositionHandler();
 
@@ -25,7 +26,7 @@ function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLate
         registerListener('.sorting-option', 'click', applyHandlers(handleSortingSelection, dispatchSortingChange));
         registerListener('#save-btn', 'click', applyHandlers(handlePollingInputSave, dispatchSortingChange));
         registerListener('.polling-input', 'keyup', handleKeyUp);
-        registerListener('.watch-later-filter', 'click', applyHandlers(toggleFilterClass, toggleDisabledFilterClass));
+        registerListener('.watch-later-filter', 'click', applyHandlers(toggleFilterClass, toggleDisabledFilterClass, toggleWatchLaterContainerClass,  dispatchToggleWatchLaterList));
         registerListener(window, 'click', closeSortingDropdown);
         registerListener(window, 'scroll', usePositionHandler);
         registerListener(window, 'resize', closeSettingsMenu);
@@ -44,7 +45,7 @@ function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLate
     }
 
     function onWatchItLater() {
-        watchItLaterService.add(getMediaIdAttr(this));
+        eventQueueService.publish('add_to_watch_later', getMediaIdAttr(this));
     }
 
     function dispatchFilterChange() {
@@ -53,6 +54,10 @@ function viewEvents(apiService, mediaFeedService, eventQueueService, watchItLate
 
     function dispatchSortingChange() {
         eventQueueService.publish('sorting_change')
+    }
+
+    function dispatchToggleWatchLaterList() {
+        eventQueueService.publish('toggle_watch_later');
     }
 
     function handleToggleClass(targetElement, toggleClass) {

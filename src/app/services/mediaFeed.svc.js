@@ -1,23 +1,50 @@
 'use strict';
 
-define([], mediaFeedService);
+define(['services/eventQueue.svc'], mediaFeedService);
 
-function mediaFeedService() {
+function mediaFeedService(eventQueueService) {
+    const WATCH_LATER = 'watchLaterList';
+
     let processedFeed = [],
         watchItLaterList = [];
 
     let activeFilters = [],
         sortByPropName = 'viewers';
 
-    function processFeed(feed) {
-        return persist(sort(filter(feed)));
-    }
+    let processWatchLaterList = false;
 
-    function persist(feed) {
-        processedFeed.splice(0);
-        processedFeed.push.apply(processedFeed, feed);
+    function processFeed(feed) {
+        if (processWatchLaterList) {
+            syncWatchLaterIds(feed);
+
+            let watchLaterList = getWatchLaterList(feed);
+
+            eventQueueService.publish('feed_updated', watchLaterList);
+
+            return watchLaterList;
+        }
+
+        let processedFeed = sort(filter(feed));
+
+        eventQueueService.publish('feed_updated', processedFeed);
 
         return processedFeed;
+
+
+    }
+
+    function getWatchLaterList(feed) {
+        let watchLaterIds = fetchFromLocalStorage(WATCH_LATER),
+            watchLaterList = feed.filter(feedItem => watchLaterIds.some(id => id === feedItem.id));
+
+        return watchLaterList;
+    }
+
+    function syncWatchLaterIds(feed) {
+        let watchLaterIds = fetchFromLocalStorage(WATCH_LATER),
+            syncronizedWatchLaterIds = watchLaterIds.filter(id => feed.some(feedItem => feedItem.id === id));
+
+            saveToLocalStorage(syncronizedWatchLaterIds);
     }
 
     function filter(feed) {
@@ -53,12 +80,47 @@ function mediaFeedService() {
         return valA > valB ? -1 : 1;
     }
 
+    function add(mediaId) {
+        return saveToLocalStorage(addToList(mediaId));
+    }
+
+    function saveToLocalStorage(listOfIds) {
+        let stringifiedList = JSON.stringify(listOfIds)
+
+        window.localStorage.setItem(WATCH_LATER, stringifiedList)
+    }
+
+    function addToList(mediaId) {
+        let isMediaAlreadyAdded = watchItLaterList.some(listItem => checkIfMediaAdded(listItem, mediaId))
+
+        if (isMediaAlreadyAdded) {
+            return watchItLaterList;
+        }
+
+        watchItLaterList.push(mediaId);
+
+        return watchItLaterList;
+    }
+
+    function checkIfMediaAdded(listItem, mediaId){
+        return listItem === mediaId;
+    }
+
+    function fetchFromLocalStorage(item) {
+        return JSON.parse(window.localStorage.getItem(item));
+    }
+
+    function toggleWatchLater() {
+        processWatchLaterList = !processWatchLaterList;
+    }
+
     return {
         processFeed,
         activeFilters,
         sortByPropName,
-        persist,
         filter,
-        sort
+        sort,
+        add,
+        toggleWatchLater
     };
 }

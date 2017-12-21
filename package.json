@@ -4,7 +4,7 @@
   "description": "A live interface for recorded & live media content.",
   "main": "src/index.js",
   "scripts": {
-    "test": "test"
+    "test": "node_modules/.bin/_mocha ./src/**/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/progvar/media-feeder#readme",
   "devDependencies": {
+    "amd-loader": "0.0.8",
     "chai": "4.1.2",
     "mocha": "4.0.1",
     "sinon": "4.1.3"

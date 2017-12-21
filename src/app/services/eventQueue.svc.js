@@ -5,15 +5,15 @@ define([], eventQueueService);
 
 function eventQueueService() {
 
-    let events = [];
+    let eventQueue = {};
 
     function subscribe(topic, listenerFn) {
-        events[topic] = events[topic] || [];
+        eventQueue[topic] = eventQueue[topic] || [];
 
-        let listenerIndex = events[topic].push(listenerFn);
+        let listenerIndex = eventQueue[topic].push(listenerFn);
 
         function unsubscribe() {
-            delete events[topic][listenerIndex];
+            delete eventQueue[topic][listenerIndex];
         }
 
         return {
@@ -22,14 +22,15 @@ function eventQueueService() {
     }
 
     function publish(topic, data) {
-        if (!events[topic]) {
+        if (!eventQueue[topic]) {
             return;
         }
 
-        events[topic].forEach(listenerFn => listenerFn(data));
+        eventQueue[topic].forEach(listenerFn => listenerFn(data));
     }
 
     return {
+        eventQueue,
         subscribe,
         publish
     }

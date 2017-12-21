@@ -4,8 +4,6 @@ require("amd-loader");
 
 
 let { expect } = require('chai');
-let sinon = require('sinon');
-let rewire = require('rewire');
 
 let eventQueueSvc = rewire('../eventQueue.svc');
 

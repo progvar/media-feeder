@@ -2,81 +2,117 @@
 
 require("amd-loader");
 
-
 let { expect } = require('chai');
+let sinon = require('sinon');
 let eventQueueSvc = require('../eventQueue.svc');
 
 
 describe('eventQueueSvc', () => {
-    let subscription;
+
+    let topic,
+        listenerFn;
+
+    before(() => {
+        topic = 'test_topic',
+        listenerFn = () => {};
+    })
 
     after(() => {
         eventQueueSvc.eventQueue = {};
     })
 
-    describe('calling subscribe with wrong params', () => {
+    describe('subscribe()', () => {
+        let subscription;
 
-        before(() => {
-            let topic = '',
-                listenerFn = () => {};
+        describe('wrong params', () => {
 
-            subscription = eventQueueSvc.subscribe(topic, listenerFn);
+            before(() => {
+                let topic = '',
+                    listenerFn = () => {};
+
+                subscription = eventQueueSvc.subscribe(topic, listenerFn);
+            })
+
+            it('should return if the `topic` is not a string or fasly', () => {
+                let topic = '';
+
+                subscription = eventQueueSvc.subscribe(topic, listenerFn);
+
+                expect(eventQueueSvc.eventQueue).to.be.an('object');
+                expect(eventQueueSvc.eventQueue).to.eql({});
+            })
+
+            it('should return if the `listenerFn` is not a function or falsy', () => {
+                let listenerFn = 'not a function';
+
+                subscription = eventQueueSvc.subscribe(topic, listenerFn);
+
+                expect(eventQueueSvc.eventQueue).to.be.an('object');
+                expect(eventQueueSvc.eventQueue).to.eql({});
+            })
         })
 
-        it('should return if the `topic` is not a string or fasly', () => {
-            let topic = 'test_topic',
-                listenerFn = 'not a function';
+        describe('correct params', () => {
+            before(() => {
+                subscription = eventQueueSvc.subscribe(topic, listenerFn);
+            })
 
-            subscription = eventQueueSvc.subscribe(topic, listenerFn);
+            it('should add a new topic called `test_topic`', () => {
+                expect(eventQueueSvc.eventQueue).to.be.an('object');
+                expect(eventQueueSvc.eventQueue).to.have.property('test_topic');
 
-            expect(eventQueueSvc.eventQueue).to.be.an('object');
-            expect(eventQueueSvc.eventQueue).to.eql({});
-        })
+            })
 
-        it('should return if the `listenerFn` is not a function or falsy', () => {
-            let topic = '',
-                listenerFn = () => {};
+            it('should register a noop listener to `test_topic`', () => {
+                let testTopic = eventQueueSvc.eventQueue['test_topic'];
 
-            subscription = eventQueueSvc.subscribe(topic, listenerFn);
+                expect(testTopic).to.be.an('array');
+                expect(testTopic.length).to.eql(1);
+            })
 
-            expect(eventQueueSvc.eventQueue).to.be.an('object');
-            expect(eventQueueSvc.eventQueue).to.eql({});
+            it('should return a method called `unsubscribe`', () => {
+                expect(subscription).to.have.property('unsubscribe');
+                expect(subscription.unsubscribe).to.be.a('function');
+            })
+
+            it('should delelete the noop listener when calling `unsubscribe`', () => {
+                subscription.unsubscribe()
+
+                let testTopic = eventQueueSvc.eventQueue['test_topic'];
+
+                expect(testTopic).to.be.an('array');
+                expect(testTopic.length).to.eql(0);
+            })
         })
     })
 
-    describe('calling subscribe with corrent params', () => {
-        before(() => {
-            let topic = 'test_topic',
-                listenerFn = () => {};
+    describe('publish()', () => {
+        let listenerSpy;
 
-            subscription = eventQueueSvc.subscribe(topic, listenerFn);
+        beforeEach(() => {
+            listenerSpy = sinon.spy(listenerFn);
+
+            eventQueueSvc.subscribe(topic, listenerSpy);
         })
 
-        it('should add a new topic called `test_topic`', () => {
-            expect(eventQueueSvc.eventQueue).to.be.an('object');
-            expect(eventQueueSvc.eventQueue).to.have.property('test_topic');
+        afterEach(() => {
+            listenerSpy.reset();
+        })
+
+        it('should call the `test_topic` listeners with no arg', () => {
+            eventQueueSvc.publish(topic);
+
+            expect(listenerSpy.calledOnce);
+            expect(listenerSpy.calledWith(undefined));
 
         })
 
-        it('should register a noop listener to `test_topic`', () => {
-            let testTopic = eventQueueSvc.eventQueue['test_topic'];
+        it('should call the `test_topic` listeners with the data arg', () => {
+            let test_data = [1, 2, 3];
+            eventQueueSvc.publish(topic, test_data);
 
-            expect(testTopic).to.be.an('array');
-            expect(testTopic.length).to.eql(1);
-        })
-
-        it('should return a method called `unsubscribe`', () => {
-            expect(subscription).to.have.property('unsubscribe');
-            expect(subscription.unsubscribe).to.be.a('function');
-        })
-
-        it('should delelete the listener when calling `unsubscribe`', () => {
-            subscription.unsubscribe()
-
-            let testTopic = eventQueueSvc.eventQueue['test_topic'];
-
-            expect(testTopic).to.be.an('array');
-            expect(testTopic.length).to.eql(0);
+            expect(listenerSpy.calledOnce);
+            sinon.assert.calledWith(listenerSpy, test_data);
         })
     })
 })

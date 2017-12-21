@@ -26,7 +26,7 @@ function eventQueueService() {
     }
 
     function publish(topic, data) {
-        if (!eventQueue[topic]) {
+        if (!isType(topic, 'string') || !eventQueue[topic]) {
             return;
         }
 

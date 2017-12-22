@@ -4,7 +4,7 @@
   "description": "A live interface for recorded & live media content.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node_modules/.bin/_mocha ./src/**/*.spec.js"
+    "test": "node test-runner.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
     "amd-loader": "0.0.8",
     "chai": "4.1.2",
     "mocha": "4.0.1",
+    "requirejs": "2.3.5",
     "sinon": "4.1.3"
   }
 }

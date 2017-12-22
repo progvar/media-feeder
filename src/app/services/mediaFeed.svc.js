@@ -17,10 +17,7 @@ function mediaFeedService(eventQueueService) {
         }
 
         if (processWatchLaterList) {
-            syncWatchLaterIds(feed);
-
             currentFeed = getWatchLaterList(feed);
-
             eventQueueService.publish('feed_updated', currentFeed);
 
             return currentFeed;
@@ -31,12 +28,10 @@ function mediaFeedService(eventQueueService) {
         eventQueueService.publish('feed_updated', currentFeed);
 
         return currentFeed;
-
-
     }
 
     function getWatchLaterList(feed) {
-        let watchLaterIds = fetchFromLocalStorage(WATCH_LATER),
+        let watchLaterIds = syncWatchLaterIds(feed),
             watchLaterList = feed.filter(feedItem => watchLaterIds.some(id => id === feedItem.id));
 
         return watchLaterList;
@@ -46,7 +41,7 @@ function mediaFeedService(eventQueueService) {
         let watchLaterIds = fetchFromLocalStorage(WATCH_LATER),
             syncronizedWatchLaterIds = watchLaterIds.filter(id => feed.some(feedItem => feedItem.id === id));
 
-            saveToLocalStorage(syncronizedWatchLaterIds);
+        return saveToLocalStorage(syncronizedWatchLaterIds);
     }
 
     function filter(feed) {
@@ -87,9 +82,17 @@ function mediaFeedService(eventQueueService) {
     }
 
     function saveToLocalStorage(listOfIds) {
-        let stringifiedList = JSON.stringify(listOfIds)
+        try {
+            let stringifiedList = JSON.stringify(listOfIds)
 
-        window.localStorage.setItem(WATCH_LATER, stringifiedList)
+            window.localStorage.setItem(WATCH_LATER, stringifiedList)
+
+            return listOfIds;
+        } catch(err) {
+            console.error(err);
+
+            return [];
+        }
     }
 
     function addToList(mediaId) {

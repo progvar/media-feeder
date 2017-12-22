@@ -4,7 +4,7 @@
   "description": "A live interface for recorded & live media content.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node test-runner.js"
+    "test": "node test-runner"
   },
   "repository": {
     "type": "git",

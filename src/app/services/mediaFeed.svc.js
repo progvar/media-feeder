@@ -12,6 +12,10 @@ function mediaFeedService(eventQueueService) {
     let processWatchLaterList = false;
 
     function processFeed(feed) {
+        if (!feed) {
+            return [];
+        }
+
         if (processWatchLaterList) {
             syncWatchLaterIds(feed);
 

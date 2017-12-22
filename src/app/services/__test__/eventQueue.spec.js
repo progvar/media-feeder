@@ -1,16 +1,18 @@
 'use strict';
 
-require("amd-loader");
+describe('eventQueueService', () => {
 
-let { expect } = require('chai');
-let sinon = require('sinon');
-let eventQueueSvc = require('../eventQueue.svc');
-
-
-describe('eventQueueSvc', () => {
-
-    let topic,
+    let eventQueueSvc,
+        topic,
         listenerFn;
+
+    before(done => {
+        requirejs(['services/eventQueue.svc'], eventQueueModule => {
+            eventQueueSvc = eventQueueModule;
+
+            done();
+        })
+    })
 
     before(() => {
         topic = 'test_topic',
@@ -24,7 +26,7 @@ describe('eventQueueSvc', () => {
     describe('subscribe()', () => {
         let subscription;
 
-        describe('wrong params', () => {
+        describe('with wrong params', () => {
 
             before(() => {
                 let topic = '',
@@ -52,7 +54,7 @@ describe('eventQueueSvc', () => {
             })
         })
 
-        describe('correct params', () => {
+        describe('with correct params', () => {
             before(() => {
                 subscription = eventQueueSvc.subscribe(topic, listenerFn);
             })
@@ -103,7 +105,7 @@ describe('eventQueueSvc', () => {
             eventQueueSvc.publish(topic);
 
             expect(listenerSpy.calledOnce);
-            expect(listenerSpy.calledWith(undefined));
+            sinon.assert.calledWith(listenerSpy, undefined);
 
         })
 

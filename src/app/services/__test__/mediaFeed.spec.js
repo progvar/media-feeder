@@ -35,30 +35,32 @@ describe('mediaFeedService', () => {
             mediaFeedSvc.processFeed.restore();
         });
 
-        it('should return an empty array if called with a falsy `feed` arg', () => {
-            let emptyFeedArray = mediaFeedSvc.processFeed();
+        describe('with a falsy `feed` param', () => {
+            it('should return an empty array', () => {
+                let emptyFeedArray = mediaFeedSvc.processFeed();
 
-            expect(processFeedSpy.calledOnce).to.be.true;
-            sinon.assert.calledWithExactly(processFeedSpy);
+                expect(processFeedSpy.calledOnce).to.be.true;
+                sinon.assert.calledWithExactly(processFeedSpy);
 
-            expect(emptyFeedArray).to.be.an('array');
-            expect(emptyFeedArray).to.eql([]);
+                expect(emptyFeedArray).to.be.an('array');
+                expect(emptyFeedArray).to.eql([]);
+            });
         });
 
-        describe('processing the watch later list feed', () => {
-            it('should return an empty array if called with a falsy `feed` arg', () => {
+        describe('with a correct `feed` param', () => {
+            it('should return a processed array with 3 items', () => {
                 let feed = [
-                    { id: 1 },
-                    { id: 2 },
-                    { id: 3 }
-                ],
-                emptyFeedArray = mediaFeedSvc.processFeed(feed);
+                        { id: 1 },
+                        { id: 2 },
+                        { id: 3 }
+                    ],
+                    processedFeedArray = mediaFeedSvc.processFeed(feed);
 
                 expect(processFeedSpy.calledOnce).to.be.true;
                 sinon.assert.calledWithExactly(processFeedSpy, feed);
 
-                expect(emptyFeedArray).to.be.an('array');
-                expect(emptyFeedArray).to.eql(feed);
+                expect(processedFeedArray).to.be.an('array');
+                expect(processedFeedArray).to.eql(feed);
 
                 expect(publishSpy.calledOnce).to.be.true;
             });
